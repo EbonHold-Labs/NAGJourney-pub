@@ -18,8 +18,8 @@ Interface/AddOns/
 ```
 
 Keep both folders together. `NAGJourneyTerrainData` supplies the navigation data
-and loads when needed. The first supported client is **Classic Beta / Forever**
-(`_classic_beta_`, Interface 16001); releases do not imply support for other clients.
+and loads when needed. The current release target is **WoW Forever**
+(`_forever_`, Interface 16001).
 
 Support for this channel is prepared for NAG Helper's **Addon > NAG Journey**
 page and becomes available with a Helper update that includes it. **Release**
@@ -48,3 +48,27 @@ third-party notices included with the release for details.
 Maintainers publish `NAGJourney-<version>.zip` with the same version in both
 addon TOCs. Stable tags use `v<major>.<minor>.<patch>`; beta tags use
 `v<major>.<minor>.<patch>-beta<number>` and are marked as prereleases.
+
+## CurseForge publishing
+
+Set `CURSEFORGE_PROJECT_ID` as a repository Actions variable and
+`CURSEFORGE_API_TOKEN` as a repository Actions secret. The token must belong
+to a CurseForge account that can upload files to that project.
+
+Publish the GitHub release from the current `main` commit in this repository
+after attaching the ZIP, manifest and SHA-256 file to its draft. The
+**Publish release to CurseForge** workflow verifies those assets, resolves the
+Forever game version from the packaged TOCs, and submits the same ZIP and
+release notes to CurseForge. Stable and beta tags retain their release types.
+The workflow logs the CurseForge file ID once the submission is accepted for
+review. If both settings are absent, the workflow reports that uploads are
+disabled.
+
+For an existing release, run the workflow from `main` with its tag and leave
+**verify_only** enabled to validate the assets and available configuration.
+For a one-time upload, run it with **verify_only** disabled after checking
+whether the file is already on CurseForge. A real upload creates a
+`curseforge-upload/<tag>` Git tag before submission to prevent duplicates.
+If submission fails after reservation, check the project's Files tab and the
+workflow log. Remove that reservation tag only after confirming CurseForge
+has no file for the release, then dispatch again.

@@ -1,0 +1,38 @@
+name: Publish release to CurseForge
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Published GitHub release tag, such as v1.0.4
+        required: true
+        type: string
+      verify_only:
+        description: Check the package and available CurseForge configuration
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: github.event_name == 'release' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1
+        with:
+          persist-credentials: false
+      - name: Verify and mirror the release ZIP
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
+          VERIFY_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.verify_only }}
+          CURSEFORGE_PROJECT_ID: ${{ vars.CURSEFORGE_PROJECT_ID }}
+          CURSEFORGE_API_TOKEN: ${{ secrets.CURSEFORGE_API_TOKEN }}
+        run: python3 scripts/upload_curseforge.py
