@@ -9,16 +9,20 @@ Open [Releases](https://github.com/EbonHold-Labs/NAGJourney-pub/releases) and
 download the `NAGJourney-<version>.zip` asset for the version you want. GitHub's
 automatically generated **Source code** archives are not addon packages.
 
-Extract both folders into your game client's `Interface/AddOns` directory:
+Extract all folders from the ZIP into your game client's `Interface/AddOns`
+directory. Releases with separate terrain data per map contain these folders:
 
 ```text
 Interface/AddOns/
   NAGJourney/
-  NAGJourneyTerrainData/
+  NAGJourneyTerrainData0/
+  NAGJourneyTerrainData1/
+  NAGJourneyTerrainData2991/
 ```
 
-Keep both folders together. `NAGJourneyTerrainData` supplies the navigation data
-and loads when needed. The current release target is **WoW Forever**
+Older releases contain `NAGJourney` and a single `NAGJourneyTerrainData`
+folder. Keep the terrain folders from your release alongside `NAGJourney`.
+The terrain data loads when needed. The current release target is **WoW Forever**
 (`_forever_`, Interface 16001).
 
 Support for this channel is prepared for NAG Helper's **Addon > NAG Journey**
@@ -45,7 +49,7 @@ Published addon packages contain the Lua runtime source, `LICENSE`,
 NAG Journey is distributed under **GPL-3.0-or-later**; see the license and
 third-party notices included with the release for details.
 
-Maintainers publish `NAGJourney-<version>.zip` with the same version in both
+Maintainers publish `NAGJourney-<version>.zip` with the same version in all
 addon TOCs. Stable tags use `v<major>.<minor>.<patch>`; beta tags use
 `v<major>.<minor>.<patch>-beta<number>` and are marked as prereleases.
 

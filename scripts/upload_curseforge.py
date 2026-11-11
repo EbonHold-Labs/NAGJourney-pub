@@ -14,7 +14,10 @@ from pathlib import Path
 REPOSITORY = "EbonHold-Labs/NAGJourney-pub"
 CURSEFORGE = "https://wow.curseforge.com/api"
 TAG = re.compile(r"v(\d+\.\d+\.\d+)(-beta\d+)?")
-FOLDERS = {"NAGJourney", "NAGJourneyTerrainData"}
+PACKAGE_LAYOUTS = (
+    {"NAGJourney", "NAGJourneyTerrainData"},
+    {"NAGJourney", "NAGJourneyTerrainData0", "NAGJourneyTerrainData1", "NAGJourneyTerrainData2991"},
+)
 
 
 def read_release(tag):
@@ -51,12 +54,13 @@ def download_package(directory, tag, version):
         raise ValueError("Release ZIP, manifest and SHA-256 file do not match.")
     with zipfile.ZipFile(package) as archive:
         files = archive.namelist()
+        folders = {name.split("/", 1)[0] for name in files}
         if (len(files) != len(set(files)) or len(files) != package_info["fileCount"]
-                or {name.split("/", 1)[0] for name in files} != FOLDERS
+                or folders not in PACKAGE_LAYOUTS
                 or any("\\" in name or ".." in name.split("/") for name in files)
                 or archive.testzip() is not None):
             raise ValueError("Release ZIP has invalid contents.")
-        for folder in FOLDERS:
+        for folder in sorted(folders):
             toc = archive.read(f"{folder}/{folder}.toc").decode("utf-8-sig").splitlines()
             for key, value in (("Interface", str(interface)), ("Version", version)):
                 header = f"## {key}:"
